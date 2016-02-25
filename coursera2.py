@@ -74,8 +74,18 @@ def largest_cc_size(ugraph):
 # print(str(largest_cc_size(TEST_GRAPH1) == {1, 2, 3, 4, 6}))
 
 def compute_resilience(ugraph, attack_order):
+    """
+    Remove nodes one by one from the graph.
+    :param ugraph:
+    :param attack_order:
+    :return:
+    """
+    result = [(len(largest_cc_size(ugraph)))]
     for node in attack_order:
-        pass
+        removed = __remove_node(ugraph, node)
+        result.append(len(largest_cc_size(removed)))
+
+    return result
 
 def __remove_node(ugraph, node_to_delete):
     del ugraph[node_to_delete]
@@ -105,3 +115,4 @@ EXPECTED = {
 removed3 = __remove_node(TEST_REMOVE_GRAPH, 3)
 # print(removed3 == EXPECTED, str(removed3))
 
+print(compute_resilience(TEST_GRAPH1, [4]))
