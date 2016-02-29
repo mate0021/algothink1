@@ -1,6 +1,10 @@
 """
 Script containing Homework2
 """
+
+from collections import deque
+# from test_graphs import *
+
 TEST_GRAPH1 = {
     1: {4},
     2: {4},
@@ -12,7 +16,13 @@ TEST_GRAPH1 = {
     8: {7},
     9: set([])
 }
-from collections import deque
+
+TEST_GRAPH_SINGLES = {
+    1: set([]),
+    2: set([]),
+    3: set([]),
+    4: set([])
+}
 
 def bfs_visited(ugraph, start_node):
     """
@@ -69,9 +79,29 @@ cc1 = cc_visited(TEST_GRAPH1)
 #     return sum(a_list)
 
 def largest_cc_size(ugraph):
-    return max(cc_visited(ugraph))
+    """
+    Gets size of the largest of connected components.
+    :param ugraph:
+    :return:
+    """
+    max_size = 0
+    for sub in cc_visited(ugraph):
+        if max_size < len(sub):
+            max_size = len(sub)
 
-# print(str(largest_cc_size(TEST_GRAPH1) == {1, 2, 3, 4, 6}))
+    return max_size
+
+TEST_GRAPH2 = {
+    1: {2},
+    2: {1},
+    3: {4},
+    4: {5},
+    5: {4}
+}
+
+# print(str(largest_cc_size(TEST_GRAPH2) == 3))
+
+
 
 def compute_resilience(ugraph, attack_order):
     """
@@ -80,14 +110,20 @@ def compute_resilience(ugraph, attack_order):
     :param attack_order:
     :return:
     """
-    result = [(len(largest_cc_size(ugraph)))]
+    result = [largest_cc_size(ugraph)]
     for node in attack_order:
         removed = __remove_node(ugraph, node)
-        result.append(len(largest_cc_size(removed)))
+        result.append(largest_cc_size(removed))
 
     return result
 
 def __remove_node(ugraph, node_to_delete):
+    """
+    From a graph, remove the node and all edges connected to it.
+    :param ugraph:
+    :param node_to_delete:
+    :return:
+    """
     del ugraph[node_to_delete]
     for node in ugraph.keys():
         ugraph[node] -= {node_to_delete}
@@ -115,4 +151,4 @@ EXPECTED = {
 removed3 = __remove_node(TEST_REMOVE_GRAPH, 3)
 # print(removed3 == EXPECTED, str(removed3))
 
-print(compute_resilience(TEST_GRAPH1, [4]))
+# print(compute_resilience(TEST_GRAPH1, [4]))
